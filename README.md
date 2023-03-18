@@ -61,6 +61,7 @@ returns a HEEx template to be a function component.
     mix phx.new table_tennis
     cd table_tennis
     mix phx.gen.html App Player players name:string won:integer lost:integer rating:integer
+    mix phx.gen.html App Match matches player1:string player2:string score1:integer score2:integer
     mix ecto.migrate
 
 ### Postgres 

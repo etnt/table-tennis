@@ -148,7 +148,29 @@ defmodule TableTennis.App do
   def create_match(attrs \\ %{}) do
     %Match{}
     |> Match.changeset(attrs)
+    |> IO.inspect(label: "create_match")
+    |> update_player_stats()
     |> Repo.insert()
+  end
+
+  defp update_player_stats(changeset) do
+
+    {wp,lp} =
+      if changeset.changes.score1 > changeset.changes.score2 do
+        {changeset.changes.player1,  changeset.changes.player2}
+      else
+        {changeset.changes.player2,  changeset.changes.player1}
+      end
+
+    # Increment the 'won' field of the winning player
+    (from p in Player, where: p.name == ^wp , update: [inc: [won: 1]])
+    |> Repo.update_all([])
+
+    # Increment the 'lost' field of the loosing player
+    (from p in Player, where: p.name == ^lp , update: [inc: [lost: 1]])
+    |> Repo.update_all([])
+
+    changeset
   end
 
   @doc """
