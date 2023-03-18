@@ -1,0 +1,18 @@
+<.header>
+  Match <%= @match.id %>
+  <:subtitle>This is a match record from your database.</:subtitle>
+  <:actions>
+    <.link href={~p"/matches/#{@match}/edit"}>
+      <.button>Edit match</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.list>
+  <:item title="Player1"><%= @match.player1 %></:item>
+  <:item title="Player2"><%= @match.player2 %></:item>
+  <:item title="Score1"><%= @match.score1 %></:item>
+  <:item title="Score2"><%= @match.score2 %></:item>
+</.list>
+
+<.back navigate={~p"/matches"}>Back to matches</.back>

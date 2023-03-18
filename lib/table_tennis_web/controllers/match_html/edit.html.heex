@@ -1,0 +1,8 @@
+<.header>
+  Edit Match <%= @match.id %>
+  <:subtitle>Use this form to manage match records in your database.</:subtitle>
+</.header>
+
+<.match_form changeset={@changeset} action={~p"/matches/#{@match}"} />
+
+<.back navigate={~p"/matches"}>Back to matches</.back>

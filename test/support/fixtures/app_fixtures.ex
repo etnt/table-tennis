@@ -20,4 +20,21 @@ defmodule TableTennis.AppFixtures do
 
     player
   end
+
+  @doc """
+  Generate a match.
+  """
+  def match_fixture(attrs \\ %{}) do
+    {:ok, match} =
+      attrs
+      |> Enum.into(%{
+        player1: "some player1",
+        player2: "some player2",
+        score1: 42,
+        score2: 42
+      })
+      |> TableTennis.App.create_match()
+
+    match
+  end
 end
