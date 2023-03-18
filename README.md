@@ -1,5 +1,14 @@
 # TableTennis
 
+Revisiting my old Table Tennis Score System, now as a tool
+to learn Elixir+Phoenix.
+
+At the end of this README I have some notes I've jotted down
+while learning the ropes of this cool framework.
+
+
+## Run
+
 To start your Phoenix server:
 
   * Run `mix setup` to install and setup dependencies
@@ -16,3 +25,46 @@ Ready to run in production? Please [check our deployment guides](https://hexdocs
   * Docs: https://hexdocs.pm/phoenix
   * Forum: https://elixirforum.com/c/phoenix-forum
   * Source: https://github.com/phoenixframework/phoenix
+
+## Notes
+
+### Overview
+Phoenix is a web development framework written in Elixir which
+implements the server-side Model View Controller (MVC) pattern.
+
+The Phoenix endpoint pipeline takes a request,
+routes it to a controller to access the Model (Business Logic),
+which then calls a view module to render a template.
+
+### Model 
+The Model will be responsible to host all of your business logic
+and business domain. It typically interacts directly with the database.
+
+### Controller
+Controllers act as intermediary modules. Their functions,
+called actions, are invoked from the router in response to
+HTTP requests. The actions, in turn, gather all the necessary
+data (e.g from the Model) and perform all the necessary steps
+before invoking the view layer. Phoenix controllers also
+build on the Plug package, and are themselves plugs.
+
+### View
+The view interface from the controller is simple – the controller
+calls a view function with the connections assigns, and the
+functions job is to return a HEEx template.
+We call any function that accepts an assigns parameter and
+returns a HEEx template to be a function component.
+
+
+### Create the project:
+
+    mix phx.new table_tennis
+    cd table_tennis
+    mix phx.gen.html App Player players name:string won:integer lost:integer rating:integer
+    mix ecto.migrate
+
+### Postgres 
+
+If POSTGRES table already exist when: mix ecto.migrate:
+
+    psql -U postgres -c 'DROP DATABASE IF EXISTS table_tennis_dev;'
