@@ -4,6 +4,7 @@ defmodule TableTennis.App do
   """
 
   import Ecto.Query, warn: false
+  alias Ecto.Changeset
   alias TableTennis.Repo
 
   alias TableTennis.App.Player
@@ -148,7 +149,7 @@ defmodule TableTennis.App do
   def create_match(attrs \\ %{}) do
     %Match{}
     |> Match.changeset(attrs)
-    |> IO.inspect(label: "create_match")
+    |> IO.inspect(label: "change set")
     |> update_player_stats()
     |> Repo.insert()
   end
@@ -170,8 +171,63 @@ defmodule TableTennis.App do
     (from p in Player, where: p.name == ^lp , update: [inc: [lost: 1]])
     |> Repo.update_all([])
 
+    winner =
+      Repo.one!(from p in Player, where: p.name == ^wp , select: [:name, :rating])
+      |> IO.inspect(label: "winner")
+
+    loser =
+      Repo.one!(from p in Player, where: p.name == ^lp , select: [:name, :rating])
+      |> IO.inspect(label: "loser")
+
+    update_rating(winner, loser)
+
     changeset
   end
+
+  @doc """
+  Updates the player ratings.
+
+  This code was actually produced py Chat-GPT...
+  """
+  defp update_rating(winner, loser) do
+    wname = winner.name
+    lname = loser.name
+
+    winner_rating = winner.rating
+    loser_rating = loser.rating
+
+    expected_score_winner = expected_score(winner_rating, loser_rating)
+    expected_score_loser = expected_score(loser_rating, winner_rating)
+
+    k_factor_winner = k_factor(winner_rating)
+    k_factor_loser = k_factor(loser_rating)
+
+    updated_winner_rating =
+      round(winner_rating + k_factor_winner * (1 - expected_score_winner))
+
+    updated_loser_rating =
+      round(loser_rating + k_factor_loser * (0 - expected_score_loser))
+
+
+    (from p in Player, where: p.name == ^wname , update: [set: [rating: ^updated_winner_rating]])
+    |> Repo.update_all([])
+
+    (from p in Player, where: p.name == ^lname , update: [set: [rating: ^updated_loser_rating]])
+    |> Repo.update_all([])
+
+  end
+
+  defp expected_score(rating, opponent_rating) do
+    1 / (1 + :math.pow(10, (opponent_rating - rating) / 400))
+  end
+
+  defp k_factor(rating) do
+    case rating do
+      rating when rating < 2400 -> 32
+      rating when rating >= 2400 -> 16
+    end
+  end
+
 
   @doc """
   Updates a match.
