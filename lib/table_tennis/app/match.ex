@@ -16,5 +16,7 @@ defmodule TableTennis.App.Match do
     match
     |> cast(attrs, [:player1, :player2, :score1, :score2])
     |> validate_required([:player1, :player2, :score1, :score2])
+    |> validate_number(:score1, greater_than_or_equal_to: 0)
+    |> validate_number(:score2, greater_than_or_equal_to: 0)
   end
 end
