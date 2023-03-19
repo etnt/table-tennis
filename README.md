@@ -69,3 +69,25 @@ returns a HEEx template to be a function component.
 If POSTGRES table already exist when: mix ecto.migrate:
 
     psql -U postgres -c 'DROP DATABASE IF EXISTS table_tennis_dev;'
+
+or perhaps better:
+
+    mix ecto.drop
+
+to undo e.g a migration:
+
+    mix ecto.rollback
+
+Working with psql:
+
+    psql table_tennis_dev  -  connect to the
+    \dt  -  list tables
+    \d players  -  list the fields in the 'players' table
+
+Working with Ecto from the shell:
+
+    alias TableTennis.Repo
+    import Ecto.Query
+    # Check what SQL is generated
+    query = from "players", select: [:name]
+    Repo.to_sql(:all, query)
