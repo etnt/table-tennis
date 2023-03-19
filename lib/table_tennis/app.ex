@@ -19,7 +19,8 @@ defmodule TableTennis.App do
 
   """
   def list_players do
-    Repo.all(Player)
+    #Repo.all(Player)
+    Repo.all(from p in Player, order_by: [desc: p.rating])
   end
 
   @doc """
