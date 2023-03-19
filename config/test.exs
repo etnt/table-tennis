@@ -7,7 +7,7 @@ import Config
 # Run `mix help test` for more information.
 config :table_tennis, TableTennis.Repo,
   username: "postgres",
-  password: "postgres",
+  password: "mortuta42",
   hostname: "localhost",
   database: "table_tennis_test#{System.get_env("MIX_TEST_PARTITION")}",
   pool: Ecto.Adapters.SQL.Sandbox,

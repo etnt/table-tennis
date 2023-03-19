@@ -10,5 +10,7 @@ defmodule TableTennis.Repo.Migrations.CreatePlayers do
 
       timestamps()
     end
+
+    create unique_index(:players, [:name])
   end
 end
