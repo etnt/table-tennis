@@ -19,7 +19,7 @@ defmodule TableTennis.App do
 
   """
   def list_players do
-    #Repo.all(Player)
+    # Repo.all(Player)
     Repo.all(from p in Player, order_by: [desc: p.rating])
   end
 
@@ -148,50 +148,42 @@ defmodule TableTennis.App do
 
   """
   def create_match(attrs \\ %{}) do
-    validation_result =
-      %Match{}
-      |> Match.changeset(attrs)
-      |> Changeset.apply_action(:create)
-
-    case validation_result do
-      {:ok, data} ->
-        data
-        |> IO.inspect(label: "data")
-        |> update_player_stats()
-        |> Repo.insert()
-      {:error, _changeset} ->
-        validation_result
-    end
+    %Match{}
+    |> Match.changeset(attrs)
+    |> IO.inspect(label: "data")
+    |> update_player_stats()
+    |> Repo.insert()
   end
 
-  defp update_player_stats(%Match{} = match) do
+  defp update_player_stats(changeset) do
+    if changeset.valid? do
+      {wp, lp} =
+        if changeset.changes.score1 > changeset.changes.score2 do
+          {changeset.changes.player1, changeset.changes.player2}
+        else
+          {changeset.changes.player2, changeset.changes.player1}
+        end
 
-    {wp,lp} =
-      if match.score1 > match.score2 do
-        {match.player1,  match.player2}
-      else
-        {match.player2,  match.player1}
-      end
+      # Increment the 'won' field of the winning player
+      from(p in Player, where: p.name == ^wp, update: [inc: [won: 1]])
+      |> Repo.update_all([])
 
-    # Increment the 'won' field of the winning player
-    (from p in Player, where: p.name == ^wp , update: [inc: [won: 1]])
-    |> Repo.update_all([])
+      # Increment the 'lost' field of the loosing player
+      from(p in Player, where: p.name == ^lp, update: [inc: [lost: 1]])
+      |> Repo.update_all([])
 
-    # Increment the 'lost' field of the loosing player
-    (from p in Player, where: p.name == ^lp , update: [inc: [lost: 1]])
-    |> Repo.update_all([])
+      winner =
+        Repo.one!(from p in Player, where: p.name == ^wp, select: [:name, :rating])
+        |> IO.inspect(label: "winner")
 
-    winner =
-      Repo.one!(from p in Player, where: p.name == ^wp , select: [:name, :rating])
-      |> IO.inspect(label: "winner")
+      loser =
+        Repo.one!(from p in Player, where: p.name == ^lp, select: [:name, :rating])
+        |> IO.inspect(label: "loser")
 
-    loser =
-      Repo.one!(from p in Player, where: p.name == ^lp , select: [:name, :rating])
-      |> IO.inspect(label: "loser")
+      update_rating(winner, loser)
+    end
 
-    update_rating(winner, loser)
-
-    match
+    changeset
   end
 
   @doc """
@@ -212,19 +204,15 @@ defmodule TableTennis.App do
     k_factor_winner = k_factor(winner_rating)
     k_factor_loser = k_factor(loser_rating)
 
-    updated_winner_rating =
-      round(winner_rating + k_factor_winner * (1 - expected_score_winner))
+    updated_winner_rating = round(winner_rating + k_factor_winner * (1 - expected_score_winner))
 
-    updated_loser_rating =
-      round(loser_rating + k_factor_loser * (0 - expected_score_loser))
+    updated_loser_rating = round(loser_rating + k_factor_loser * (0 - expected_score_loser))
 
-
-    (from p in Player, where: p.name == ^wname , update: [set: [rating: ^updated_winner_rating]])
+    from(p in Player, where: p.name == ^wname, update: [set: [rating: ^updated_winner_rating]])
     |> Repo.update_all([])
 
-    (from p in Player, where: p.name == ^lname , update: [set: [rating: ^updated_loser_rating]])
+    from(p in Player, where: p.name == ^lname, update: [set: [rating: ^updated_loser_rating]])
     |> Repo.update_all([])
-
   end
 
   defp expected_score(rating, opponent_rating) do
@@ -237,7 +225,6 @@ defmodule TableTennis.App do
       rating when rating >= 2400 -> 16
     end
   end
-
 
   @doc """
   Updates a match.

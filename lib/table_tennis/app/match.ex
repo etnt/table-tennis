@@ -1,6 +1,8 @@
 defmodule TableTennis.App.Match do
+  alias TableTennis.App.Player
   use Ecto.Schema
   import Ecto.Changeset
+  alias App.Player
 
   schema "matches" do
     field :player1, :string
@@ -18,11 +20,14 @@ defmodule TableTennis.App.Match do
     |> validate_required([:player1, :player2, :score1, :score2])
     |> validate_number(:score1, greater_than_or_equal_to: 0)
     |> validate_number(:score2, greater_than_or_equal_to: 0)
+    |> validate_fields_not_equal(:player1, :player2)
     |> validate_fields_not_equal(:score1, :score2)
   end
 
+  @doc false
   defp validate_fields_not_equal(changeset, field1, field2) do
     v2 = get_field(changeset, field2)
+
     validate_change(changeset, field1, fn field, value ->
       if value == v2 do
         [{field, "can't be equal to #{field2}"}]
@@ -31,5 +36,4 @@ defmodule TableTennis.App.Match do
       end
     end)
   end
-
 end
