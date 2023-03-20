@@ -148,20 +148,29 @@ defmodule TableTennis.App do
 
   """
   def create_match(attrs \\ %{}) do
-    %Match{}
-    |> Match.changeset(attrs)
-    |> IO.inspect(label: "change set")
-    |> update_player_stats()
-    |> Repo.insert()
+    validation_result =
+      %Match{}
+      |> Match.changeset(attrs)
+      |> Changeset.apply_action(:create)
+
+    case validation_result do
+      {:ok, data} ->
+        data
+        |> IO.inspect(label: "data")
+        |> update_player_stats()
+        |> Repo.insert()
+      {:error, _changeset} ->
+        validation_result
+    end
   end
 
-  defp update_player_stats(changeset) do
+  defp update_player_stats(%Match{} = match) do
 
     {wp,lp} =
-      if changeset.changes.score1 > changeset.changes.score2 do
-        {changeset.changes.player1,  changeset.changes.player2}
+      if match.score1 > match.score2 do
+        {match.player1,  match.player2}
       else
-        {changeset.changes.player2,  changeset.changes.player1}
+        {match.player2,  match.player1}
       end
 
     # Increment the 'won' field of the winning player
@@ -182,7 +191,7 @@ defmodule TableTennis.App do
 
     update_rating(winner, loser)
 
-    changeset
+    match
   end
 
   @doc """
