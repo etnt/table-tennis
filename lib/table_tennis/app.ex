@@ -166,33 +166,31 @@ defmodule TableTennis.App do
         end
 
       # Increment the 'won' field of the winning player
-      update_winning_won =
-        from(p in Player, where: p.name == ^wp, update: [inc: [won: 1]])
+      update_winning_won = from(p in Player, where: p.name == ^wp, update: [inc: [won: 1]])
 
       # Increment the 'lost' field of the loosing player
-      update_loosing_lost =
-        from(p in Player, where: p.name == ^lp, update: [inc: [lost: 1]])
+      update_loosing_lost = from(p in Player, where: p.name == ^lp, update: [inc: [lost: 1]])
 
       Ecto.Multi.new()
-        |> Ecto.Multi.update_all(:winning_won, update_winning_won, [])
-        |> Ecto.Multi.run(:check_won, fn
-           _repo, %{winning_won: {1, _}} -> {:ok, nil}
-           _repo, %{winning_won: {_, _}} -> {:error, {:failed_won, wp}}
-          end )
-        |> Ecto.Multi.update_all(:loosing_lost, update_loosing_lost, [])
-        |> Repo.transaction()
-        |> case do
-             {:ok, _} ->
-               # Handle success case
-               :ok
-             {:error, name, value, changes_so_far} ->
-               # Handle failure case
-               :error
-           end
+      |> Ecto.Multi.update_all(:winning_won, update_winning_won, [])
+      |> Ecto.Multi.run(:check_won, fn
+        _repo, %{winning_won: {1, _}} -> {:ok, nil}
+        _repo, %{winning_won: {_, _}} -> {:error, {:failed_won, wp}}
+      end)
+      |> Ecto.Multi.update_all(:loosing_lost, update_loosing_lost, [])
+      |> Repo.transaction()
+      |> case do
+        {:ok, _} ->
+          # Handle success case
+          :ok
 
-        # FIXA SÅ ATT update_rating OXÅ JOBBAR MOT Ecto.Multi
-        # SE TILL ATT RETURNERA CHANGESET "error" TILL MATCH-CONTROLLERN!
+        {:error, name, value, changes_so_far} ->
+          # Handle failure case
+          :error
+      end
 
+      # FIXA SÅ ATT update_rating OXÅ JOBBAR MOT Ecto.Multi
+      # SE TILL ATT RETURNERA CHANGESET "error" TILL MATCH-CONTROLLERN!
 
       winner =
         Repo.one!(from p in Player, where: p.name == ^wp, select: [:name, :rating])

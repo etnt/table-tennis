@@ -4,7 +4,12 @@ defmodule TableTennisWeb.MatchControllerTest do
   import TableTennis.AppFixtures
 
   @create_attrs %{player1: "some player1", player2: "some player2", score1: 42, score2: 42}
-  @update_attrs %{player1: "some updated player1", player2: "some updated player2", score1: 43, score2: 43}
+  @update_attrs %{
+    player1: "some updated player1",
+    player2: "some updated player2",
+    score1: 43,
+    score2: 43
+  }
   @invalid_attrs %{player1: nil, player2: nil, score1: nil, score2: nil}
 
   describe "index" do

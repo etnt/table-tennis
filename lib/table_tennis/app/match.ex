@@ -49,6 +49,7 @@ defmodule TableTennis.App.Match do
       player_exist =
         from(p in Player, where: p.name == ^v)
         |> Repo.exists?()
+
       if player_exist do
         []
       else

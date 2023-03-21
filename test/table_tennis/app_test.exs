@@ -96,7 +96,13 @@ defmodule TableTennis.AppTest do
 
     test "update_match/2 with valid data updates the match" do
       match = match_fixture()
-      update_attrs = %{player1: "some updated player1", player2: "some updated player2", score1: 43, score2: 43}
+
+      update_attrs = %{
+        player1: "some updated player1",
+        player2: "some updated player2",
+        score1: 43,
+        score2: 43
+      }
 
       assert {:ok, %Match{} = match} = App.update_match(match, update_attrs)
       assert match.player1 == "some updated player1"
