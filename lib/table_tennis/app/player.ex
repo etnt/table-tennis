@@ -18,6 +18,7 @@ defmodule TableTennis.App.Player do
     |> cast(attrs, [:name])
     # |> validate_required([:name, :won, :lost, :rating])
     |> validate_required([:name])
+    |> validate_length(:name, min: 3)
     |> unique_constraint([:name])
   end
 end
