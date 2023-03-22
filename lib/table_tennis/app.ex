@@ -115,7 +115,8 @@ defmodule TableTennis.App do
 
   """
   def list_matches do
-    Repo.all(Match)
+    #Repo.all(Match)
+    Repo.all(from m in Match, order_by: [desc: m.updated_at])
   end
 
   @doc """
