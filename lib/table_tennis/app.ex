@@ -4,7 +4,6 @@ defmodule TableTennis.App do
   """
 
   import Ecto.Query, warn: false
-  alias Ecto.Changeset
   alias TableTennis.Repo
 
   alias TableTennis.App.Player
@@ -148,75 +147,72 @@ defmodule TableTennis.App do
 
   """
   def create_match(attrs \\ %{}) do
-    changeset =
-      %Match{}
-      |> Match.changeset(attrs)
-      |> IO.inspect(label: "data")
-      |> update_player_stats()
-      |> Repo.insert()
+    %Match{}
+    |> Match.changeset(attrs)
+    |> update_player_stats()
   end
 
   defp update_player_stats(changeset) do
     if changeset.valid? do
-      {wp, lp} =
-        if changeset.changes.score1 > changeset.changes.score2 do
-          {changeset.changes.player1, changeset.changes.player2}
-        else
-          {changeset.changes.player2, changeset.changes.player1}
-        end
 
-      # Increment the 'won' field of the winning player
-      update_winning_won = from(p in Player, where: p.name == ^wp, update: [inc: [won: 1]])
+      result =
+        Repo.transaction(fn ->
 
-      # Increment the 'lost' field of the loosing player
-      update_loosing_lost = from(p in Player, where: p.name == ^lp, update: [inc: [lost: 1]])
+          # Figure out winning and losing player
+        {wp, lp} =
+          if changeset.changes.score1 > changeset.changes.score2 do
+            {changeset.changes.player1, changeset.changes.player2}
+          else
+            {changeset.changes.player2, changeset.changes.player1}
+          end
 
-      Ecto.Multi.new()
-      |> Ecto.Multi.update_all(:winning_won, update_winning_won, [])
-      |> Ecto.Multi.run(:check_won, fn
-        _repo, %{winning_won: {1, _}} -> {:ok, nil}
-        _repo, %{winning_won: {_, _}} -> {:error, {:failed_won, wp}}
+        # Increment the 'won' field of the winning player
+        from(p in Player, where: p.name == ^wp, update: [inc: [won: 1]])
+        |> Repo.update_all([])
+
+        # Increment the 'lost' field of the loosing player
+        from(p in Player, where: p.name == ^lp, update: [inc: [lost: 1]])
+        |> Repo.update_all([])
+
+        # Get the current rating of the winner
+        winner = Repo.one!(from p in Player, where: p.name == ^wp, select: [:rating])
+
+        # Get the current rating of the looser
+        loser = Repo.one!(from p in Player, where: p.name == ^lp, select: [:rating])
+
+        # Calculate new ratings
+        {updated_winner_rating, updated_loser_rating} =
+          update_rating(winner.rating, loser.rating)
+
+        # Set a new rating for the winning player
+        {1, nil} =
+          from(p in Player, where: p.name == ^wp, update: [set: [rating: ^updated_winner_rating]])
+          |> Repo.update_all([])
+
+        # Set a new rating for the loosing player
+        {1, nil} =
+          from(p in Player, where: p.name == ^lp, update: [set: [rating: ^updated_loser_rating]])
+          |> Repo.update_all([])
+
+        # Finally add the match!
+        changeset
+        |> Repo.insert()
+
       end)
-      |> Ecto.Multi.update_all(:loosing_lost, update_loosing_lost, [])
-      |> Repo.transaction()
-      |> case do
-        {:ok, _} ->
-          # Handle success case
-          :ok
 
-        {:error, name, value, changes_so_far} ->
-          # Handle failure case
-          :error
+      case result do
+        {:ok, ok} -> ok
+        _         -> {:error, changeset}
       end
 
-      # FIXA SÅ ATT update_rating OXÅ JOBBAR MOT Ecto.Multi
-      # SE TILL ATT RETURNERA CHANGESET "error" TILL MATCH-CONTROLLERN!
-
-      winner =
-        Repo.one!(from p in Player, where: p.name == ^wp, select: [:name, :rating])
-        |> IO.inspect(label: "winner")
-
-      loser =
-        Repo.one!(from p in Player, where: p.name == ^lp, select: [:name, :rating])
-        |> IO.inspect(label: "loser")
-
-      update_rating(winner, loser)
+    else
+      {:error, changeset}
     end
 
-    changeset
   end
 
-  @doc """
-  Updates the player ratings.
-
-  This code was actually produced py Chat-GPT...
-  """
-  defp update_rating(winner, loser) do
-    wname = winner.name
-    lname = loser.name
-
-    winner_rating = winner.rating
-    loser_rating = loser.rating
+  # This rating calculation was actually produced py Chat-GPT...
+  defp update_rating(winner_rating, loser_rating) do
 
     expected_score_winner = expected_score(winner_rating, loser_rating)
     expected_score_loser = expected_score(loser_rating, winner_rating)
@@ -228,16 +224,14 @@ defmodule TableTennis.App do
 
     updated_loser_rating = round(loser_rating + k_factor_loser * (0 - expected_score_loser))
 
-    from(p in Player, where: p.name == ^wname, update: [set: [rating: ^updated_winner_rating]])
-    |> Repo.update_all([])
-
-    from(p in Player, where: p.name == ^lname, update: [set: [rating: ^updated_loser_rating]])
-    |> Repo.update_all([])
+    {updated_winner_rating, updated_loser_rating}
   end
+
 
   defp expected_score(rating, opponent_rating) do
     1 / (1 + :math.pow(10, (opponent_rating - rating) / 400))
   end
+
 
   defp k_factor(rating) do
     case rating do
@@ -245,6 +239,7 @@ defmodule TableTennis.App do
       rating when rating >= 2400 -> 16
     end
   end
+
 
   @doc """
   Updates a match.
