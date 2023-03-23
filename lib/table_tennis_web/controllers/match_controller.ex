@@ -4,6 +4,8 @@ defmodule TableTennisWeb.MatchController do
   alias TableTennis.App
   alias TableTennis.App.Match
 
+  require Logger
+
   def index(conn, _params) do
     matches = App.list_matches()
     render(conn, :index, matches: matches)
@@ -52,6 +54,7 @@ defmodule TableTennisWeb.MatchController do
   end
 
   def delete(conn, %{"id" => id}) do
+    Logger.info "deleting match, id=#{id}"
     match = App.get_match!(id)
     {:ok, _match} = App.delete_match(match)
 
