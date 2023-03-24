@@ -14,6 +14,15 @@ defmodule TableTennisWeb.Router do
     plug :accepts, ["json"]
   end
 
+  scope "/auth", TableTennisWeb do
+    pipe_through :browser
+
+    get "/:provider", AuthController, :request
+    get "/:provider/callback", AuthController, :callback
+    post "/:provider/callback", AuthController, :callback
+    delete "/logout", AuthController, :delete
+  end
+
   scope "/", TableTennisWeb do
     pipe_through :browser
 
@@ -21,6 +30,8 @@ defmodule TableTennisWeb.Router do
     resources "/players", PlayerController
     resources "/matches", MatchController
   end
+
+
 
   # Other scopes may use custom stacks.
   # scope "/api", TableTennisWeb do
