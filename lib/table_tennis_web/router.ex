@@ -29,6 +29,7 @@ defmodule TableTennisWeb.Router do
     get "/", PageController, :home
     resources "/players", PlayerController
     resources "/matches", MatchController
+    resources "/users", UserController
   end
 
 
