@@ -10,14 +10,14 @@ defmodule TableTennisWeb.MatchController do
     matches = App.list_matches()
     cur_user = get_session(conn, :current_user)
     conn
-    |> assign(:current_user, cur_user)
-    |> IO.inspect(label: "match_controller, index")
-    |> render(:index, matches: matches)
+    |> render(:index, matches: matches, current_user: cur_user)
   end
 
   def new(conn, _params) do
     changeset = App.change_match(%Match{})
-    render(conn, :new, changeset: changeset)
+    cur_user = get_session(conn, :current_user)
+    conn
+    |> render(:new, changeset: changeset, current_user: cur_user)
   end
 
   def create(conn, %{"match" => match_params}) do
@@ -28,19 +28,25 @@ defmodule TableTennisWeb.MatchController do
         |> redirect(to: ~p"/matches/#{match}")
 
       {:error, %Ecto.Changeset{} = changeset} ->
-        render(conn, :new, changeset: changeset)
+        cur_user = get_session(conn, :current_user)
+        conn
+        |> render(:new, changeset: changeset, current_user: cur_user)
     end
   end
 
   def show(conn, %{"id" => id}) do
     match = App.get_match!(id)
-    render(conn, :show, match: match)
+    cur_user = get_session(conn, :current_user)
+    conn
+    |> render(:show, match: match, current_user: cur_user)
   end
 
   def edit(conn, %{"id" => id}) do
     match = App.get_match!(id)
     changeset = App.change_match(match)
-    render(conn, :edit, match: match, changeset: changeset)
+    cur_user = get_session(conn, :current_user)
+    conn
+    |> render(:edit, match: match, changeset: changeset, current_user: cur_user)
   end
 
   def update(conn, %{"id" => id, "match" => match_params}) do
@@ -53,7 +59,9 @@ defmodule TableTennisWeb.MatchController do
         |> redirect(to: ~p"/matches/#{match}")
 
       {:error, %Ecto.Changeset{} = changeset} ->
-        render(conn, :edit, match: match, changeset: changeset)
+        cur_user = get_session(conn, :current_user)
+        conn
+        |> render(:edit, match: match, changeset: changeset, current_user: cur_user)
     end
   end
 
