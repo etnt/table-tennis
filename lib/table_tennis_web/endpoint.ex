@@ -5,10 +5,11 @@ defmodule TableTennisWeb.Endpoint do
   # this means its contents can be read but not tampered with.
   # Set :encryption_salt if you would also like to encrypt it.
   @session_options [
-    store: :cookie,
-    key: "_table_tennis_key",
-    signing_salt: "bFPSx0fe",
-    same_site: "Lax"
+    store: :ets,
+    key: "table_tennis_key",
+    table: :session
+    #signing_salt: "bFPSx0fe",
+    #same_site: "Lax"
   ]
 
   socket "/live", Phoenix.LiveView.Socket, websocket: [connect_info: [session: @session_options]]

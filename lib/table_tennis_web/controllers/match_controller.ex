@@ -8,7 +8,11 @@ defmodule TableTennisWeb.MatchController do
 
   def index(conn, _params) do
     matches = App.list_matches()
-    render(conn, :index, matches: matches)
+    cur_user = get_session(conn, :current_user)
+    conn
+    |> assign(:current_user, cur_user)
+    |> IO.inspect(label: "match_controller, index")
+    |> render(:index, matches: matches)
   end
 
   def new(conn, _params) do

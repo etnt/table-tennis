@@ -14,7 +14,7 @@ defmodule TableTennis.Accounts.User do
   @doc false
   def changeset(user, attrs) do
     user
-    |> cast(attrs, [:email, :uid, :name, :avatar])
-    |> validate_required([:email, :uid, :name, :avatar])
+    |> cast(attrs, [:email, :name, :avatar])
+    |> validate_required([:email, :name, :avatar])
   end
 end

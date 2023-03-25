@@ -22,6 +22,11 @@ defmodule TableTennis.Application do
       # {TableTennis.Worker, arg}
     ]
 
+    # Create an ETS table when the application starts.
+    # See: @session_options in endpoint.ex
+    # This to avoid too large cookie values (4096).
+    :ets.new(:session, [:named_table, :public, read_concurrency: true])
+
     # See https://hexdocs.pm/elixir/Supervisor.html
     # for other strategies and supported options
     opts = [strategy: :one_for_one, name: TableTennis.Supervisor]
