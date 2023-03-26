@@ -8,16 +8,12 @@ defmodule TableTennisWeb.MatchController do
 
   def index(conn, _params) do
     matches = App.list_matches()
-    cur_user = get_session(conn, :current_user)
-    conn
-    |> render(:index, matches: matches, current_user: cur_user)
+    render(conn, :index, matches: matches)
   end
 
   def new(conn, _params) do
     changeset = App.change_match(%Match{})
-    cur_user = get_session(conn, :current_user)
-    conn
-    |> render(:new, changeset: changeset, current_user: cur_user)
+    render(conn, :new, changeset: changeset)
   end
 
   def create(conn, %{"match" => match_params}) do
@@ -28,25 +24,19 @@ defmodule TableTennisWeb.MatchController do
         |> redirect(to: ~p"/matches/#{match}")
 
       {:error, %Ecto.Changeset{} = changeset} ->
-        cur_user = get_session(conn, :current_user)
-        conn
-        |> render(:new, changeset: changeset, current_user: cur_user)
+        render(conn, :new, changeset: changeset)
     end
   end
 
   def show(conn, %{"id" => id}) do
     match = App.get_match!(id)
-    cur_user = get_session(conn, :current_user)
-    conn
-    |> render(:show, match: match, current_user: cur_user)
+    render(conn, :show, match: match)
   end
 
   def edit(conn, %{"id" => id}) do
     match = App.get_match!(id)
     changeset = App.change_match(match)
-    cur_user = get_session(conn, :current_user)
-    conn
-    |> render(:edit, match: match, changeset: changeset, current_user: cur_user)
+    render(conn, :edit, match: match, changeset: changeset)
   end
 
   def update(conn, %{"id" => id, "match" => match_params}) do
@@ -59,9 +49,7 @@ defmodule TableTennisWeb.MatchController do
         |> redirect(to: ~p"/matches/#{match}")
 
       {:error, %Ecto.Changeset{} = changeset} ->
-        cur_user = get_session(conn, :current_user)
-        conn
-        |> render(:edit, match: match, changeset: changeset, current_user: cur_user)
+        render(conn, :edit, match: match, changeset: changeset)
     end
   end
 
