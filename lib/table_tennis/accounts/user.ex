@@ -2,11 +2,15 @@ defmodule TableTennis.Accounts.User do
   use Ecto.Schema
   import Ecto.Changeset
 
+  alias TableTennis.App.Player
+
   schema "users" do
     field :avatar, :string
     field :email, :string
     field :name, :string
     field :uid, :string
+
+    has_one :player, Player
 
     timestamps()
   end

@@ -7,8 +7,8 @@ defmodule TableTennis.App.Match do
   alias TableTennis.App.Player
 
   schema "matches" do
-    field :player1, :string
-    field :player2, :string
+    field :player1_nick, :string
+    field :player2_nick, :string
     field :score1, :integer
     field :score2, :integer
 
