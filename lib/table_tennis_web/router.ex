@@ -21,7 +21,7 @@ defmodule TableTennisWeb.Router do
     get "/:provider", AuthController, :request
     get "/:provider/callback", AuthController, :callback
     post "/:provider/callback", AuthController, :callback
-    delete "/logout", AuthController, :delete
+    #delete "/logout", AuthController, :delete
   end
 
   scope "/", TableTennisWeb do
@@ -31,6 +31,7 @@ defmodule TableTennisWeb.Router do
     resources "/players", PlayerController
     resources "/matches", MatchController
     resources "/users", UserController
+    get "/logout", AuthController, :delete
   end
 
   # Other scopes may use custom stacks.

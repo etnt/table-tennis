@@ -18,7 +18,7 @@ defmodule TableTennisWeb.AuthController do
     conn
     |> put_flash(:info, "You have been logged out!")
     |> clear_session()
-    |> redirect(to: "/")
+    |> redirect(to: "/players")
   end
 
   def callback(%{assigns: %{ueberauth_failure: _fails}} = conn, _params) do
@@ -31,7 +31,7 @@ defmodule TableTennisWeb.AuthController do
     case Accounts.find_or_create(auth) do
       {:ok, user} ->
         conn
-        |> put_flash(:info, "Successfully authenticated.")
+        |> put_flash(:info, "Welcome, #{user.name}!")
         |> put_session(:current_user, user)
         |> configure_session(renew: true)
         |> redirect(to: "/matches")

@@ -15,9 +15,7 @@
     </div>
     <div class="flex items-center gap-4">
       <%= if @current_user do %>
-        <p class="text-[0.8125rem] font-semibold leading-6 trailing-6 text-zinc-900 hover:text-zinc-700">
-          Welcome, <%= @current_user.name %>!
-        </p>
+        <img class="w-10 h-10 rounded-full" src={@current_user.avatar} alt="Rounded avatar">
       <% end %>
 
       <a
@@ -32,12 +30,20 @@
       >
         Players
       </a>
-      <a
-        href="/auth/github"
-        class="text-[0.8125rem] font-semibold leading-6 text-zinc-900 hover:text-zinc-700 hover:underline"
-      >
-        Login
-      </a>
+      <%= if @current_user do %>
+        <a href="/logout">
+          <button class="phx-submit-loading:opacity-75 text-[0.8125rem] font-semibold leading-6 text-zinc-900 hover:text-zinc-700 hover:underline">
+            Logout
+          </button>
+        </a>
+      <% else %>
+        <a href="/auth/github"
+           class="text-[0.8125rem] font-semibold leading-6 text-zinc-900 hover:text-zinc-700 hover:underline"
+        >
+          Login
+        </a>
+      <% end %>
+
     </div>
     <div class="flex items-center gap-4">
       <a
