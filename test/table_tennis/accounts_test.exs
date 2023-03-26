@@ -21,7 +21,12 @@ defmodule TableTennis.AccountsTest do
     end
 
     test "create_user/1 with valid data creates a user" do
-      valid_attrs = %{avatar: "some avatar", email: "some email", name: "some name", uid: "some uid"}
+      valid_attrs = %{
+        avatar: "some avatar",
+        email: "some email",
+        name: "some name",
+        uid: "some uid"
+      }
 
       assert {:ok, %User{} = user} = Accounts.create_user(valid_attrs)
       assert user.avatar == "some avatar"
@@ -36,7 +41,13 @@ defmodule TableTennis.AccountsTest do
 
     test "update_user/2 with valid data updates the user" do
       user = user_fixture()
-      update_attrs = %{avatar: "some updated avatar", email: "some updated email", name: "some updated name", uid: "some updated uid"}
+
+      update_attrs = %{
+        avatar: "some updated avatar",
+        email: "some updated email",
+        name: "some updated name",
+        uid: "some updated uid"
+      }
 
       assert {:ok, %User{} = user} = Accounts.update_user(user, update_attrs)
       assert user.avatar == "some updated avatar"

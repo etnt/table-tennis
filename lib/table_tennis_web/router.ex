@@ -33,8 +33,6 @@ defmodule TableTennisWeb.Router do
     resources "/users", UserController
   end
 
-
-
   # Other scopes may use custom stacks.
   # scope "/api", TableTennisWeb do
   #   pipe_through :api

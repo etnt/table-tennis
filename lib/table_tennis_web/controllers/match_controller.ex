@@ -54,7 +54,7 @@ defmodule TableTennisWeb.MatchController do
   end
 
   def delete(conn, %{"id" => id}) do
-    Logger.info "deleting match, id=#{id}"
+    Logger.info("deleting match, id=#{id}")
     match = App.get_match!(id)
     {:ok, _match} = App.delete_match(match)
 

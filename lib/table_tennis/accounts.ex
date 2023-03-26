@@ -10,7 +10,6 @@ defmodule TableTennis.Accounts do
   alias TableTennis.Accounts.User
   alias Ueberauth.Auth
 
-
   @doc """
   Returns the list of users.
 
@@ -121,7 +120,6 @@ defmodule TableTennis.Accounts do
     User.changeset(user, attrs)
   end
 
-
   #
   # https://sisccr.medium.com/social-login-with-phoenix-1-5-e9ab9c23356e
   #
@@ -204,5 +202,4 @@ defmodule TableTennis.Accounts do
       end
     end
   end
-
 end

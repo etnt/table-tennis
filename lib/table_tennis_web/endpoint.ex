@@ -8,8 +8,8 @@ defmodule TableTennisWeb.Endpoint do
     store: :ets,
     key: "table_tennis_key",
     table: :session
-    #signing_salt: "bFPSx0fe",
-    #same_site: "Lax"
+    # signing_salt: "bFPSx0fe",
+    # same_site: "Lax"
   ]
 
   socket "/live", Phoenix.LiveView.Socket, websocket: [connect_info: [session: @session_options]]

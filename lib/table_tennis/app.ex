@@ -115,7 +115,7 @@ defmodule TableTennis.App do
 
   """
   def list_matches do
-    #Repo.all(Match)
+    # Repo.all(Match)
     Repo.all(from m in Match, order_by: [desc: m.updated_at])
   end
 
@@ -155,66 +155,63 @@ defmodule TableTennis.App do
 
   defp update_player_stats(changeset) do
     if changeset.valid? do
-
       result =
         Repo.transaction(fn ->
-
           # Figure out winning and losing player
-        {wp, lp} =
-          if changeset.changes.score1 > changeset.changes.score2 do
-            {changeset.changes.player1, changeset.changes.player2}
-          else
-            {changeset.changes.player2, changeset.changes.player1}
-          end
+          {wp, lp} =
+            if changeset.changes.score1 > changeset.changes.score2 do
+              {changeset.changes.player1, changeset.changes.player2}
+            else
+              {changeset.changes.player2, changeset.changes.player1}
+            end
 
-        # Increment the 'won' field of the winning player
-        from(p in Player, where: p.name == ^wp, update: [inc: [won: 1]])
-        |> Repo.update_all([])
-
-        # Increment the 'lost' field of the loosing player
-        from(p in Player, where: p.name == ^lp, update: [inc: [lost: 1]])
-        |> Repo.update_all([])
-
-        # Get the current rating of the winner
-        winner = Repo.one!(from p in Player, where: p.name == ^wp, select: [:rating])
-
-        # Get the current rating of the looser
-        loser = Repo.one!(from p in Player, where: p.name == ^lp, select: [:rating])
-
-        # Calculate new ratings
-        {updated_winner_rating, updated_loser_rating} =
-          update_rating(winner.rating, loser.rating)
-
-        # Set a new rating for the winning player
-        {1, nil} =
-          from(p in Player, where: p.name == ^wp, update: [set: [rating: ^updated_winner_rating]])
+          # Increment the 'won' field of the winning player
+          from(p in Player, where: p.name == ^wp, update: [inc: [won: 1]])
           |> Repo.update_all([])
 
-        # Set a new rating for the loosing player
-        {1, nil} =
-          from(p in Player, where: p.name == ^lp, update: [set: [rating: ^updated_loser_rating]])
+          # Increment the 'lost' field of the loosing player
+          from(p in Player, where: p.name == ^lp, update: [inc: [lost: 1]])
           |> Repo.update_all([])
 
-        # Finally add the match!
-        changeset
-        |> Repo.insert()
+          # Get the current rating of the winner
+          winner = Repo.one!(from p in Player, where: p.name == ^wp, select: [:rating])
 
-      end)
+          # Get the current rating of the looser
+          loser = Repo.one!(from p in Player, where: p.name == ^lp, select: [:rating])
+
+          # Calculate new ratings
+          {updated_winner_rating, updated_loser_rating} =
+            update_rating(winner.rating, loser.rating)
+
+          # Set a new rating for the winning player
+          {1, nil} =
+            from(p in Player,
+              where: p.name == ^wp,
+              update: [set: [rating: ^updated_winner_rating]]
+            )
+            |> Repo.update_all([])
+
+          # Set a new rating for the loosing player
+          {1, nil} =
+            from(p in Player, where: p.name == ^lp, update: [set: [rating: ^updated_loser_rating]])
+            |> Repo.update_all([])
+
+          # Finally add the match!
+          changeset
+          |> Repo.insert()
+        end)
 
       case result do
         {:ok, ok} -> ok
-        _         -> {:error, changeset}
+        _ -> {:error, changeset}
       end
-
     else
       {:error, changeset}
     end
-
   end
 
   # This rating calculation was actually produced py Chat-GPT...
   defp update_rating(winner_rating, loser_rating) do
-
     expected_score_winner = expected_score(winner_rating, loser_rating)
     expected_score_loser = expected_score(loser_rating, winner_rating)
 
@@ -228,11 +225,9 @@ defmodule TableTennis.App do
     {updated_winner_rating, updated_loser_rating}
   end
 
-
   defp expected_score(rating, opponent_rating) do
     1 / (1 + :math.pow(10, (opponent_rating - rating) / 400))
   end
-
 
   defp k_factor(rating) do
     case rating do
@@ -240,7 +235,6 @@ defmodule TableTennis.App do
       rating when rating >= 2400 -> 16
     end
   end
-
 
   @doc """
   Updates a match.

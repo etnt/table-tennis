@@ -1,7 +1,6 @@
 defmodule TableTennisWeb.Authenticator do
   import Plug.Conn
 
-
   def init(opts), do: opts
 
   def call(conn, _opts) do
@@ -9,9 +8,10 @@ defmodule TableTennisWeb.Authenticator do
       conn
       |> get_session(:current_user)
       |> case do
-           nil -> nil
-           id -> id
-         end
+        nil -> nil
+        id -> id
+      end
+
     assign(conn, :current_user, user)
   end
 end

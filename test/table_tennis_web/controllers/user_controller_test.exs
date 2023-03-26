@@ -4,7 +4,12 @@ defmodule TableTennisWeb.UserControllerTest do
   import TableTennis.AccountsFixtures
 
   @create_attrs %{avatar: "some avatar", email: "some email", name: "some name", uid: "some uid"}
-  @update_attrs %{avatar: "some updated avatar", email: "some updated email", name: "some updated name", uid: "some updated uid"}
+  @update_attrs %{
+    avatar: "some updated avatar",
+    email: "some updated email",
+    name: "some updated name",
+    uid: "some updated uid"
+  }
   @invalid_attrs %{avatar: nil, email: nil, name: nil, uid: nil}
 
   describe "index" do
