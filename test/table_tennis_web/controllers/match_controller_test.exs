@@ -3,7 +3,7 @@ defmodule TableTennisWeb.MatchControllerTest do
 
   import TableTennis.AppFixtures
 
-  @create_attrs %{player1: "some player1", player2: "some player2", score1: 42, score2: 42}
+  @create_attrs %{player1: "some player1", player2: "some player2", score1: 3, score2: 1}
   @update_attrs %{
     player1: "some updated player1",
     player2: "some updated player2",
@@ -11,6 +11,8 @@ defmodule TableTennisWeb.MatchControllerTest do
     score2: 43
   }
   @invalid_attrs %{player1: nil, player2: nil, score1: nil, score2: nil}
+  @invalid_attrs_same_player %{player1: "p", player2: "p", score1: 3, score2: 1}
+  @invalid_attrs_same_score %{player1: "p1", player2: "p2", score1: 3, score2: 3}
 
   describe "index" do
     test "lists all matches", %{conn: conn} do
@@ -39,6 +41,16 @@ defmodule TableTennisWeb.MatchControllerTest do
 
     test "renders errors when data is invalid", %{conn: conn} do
       conn = post(conn, ~p"/matches", match: @invalid_attrs)
+      assert html_response(conn, 200) =~ "New Match"
+    end
+
+    test "renders errors when same player", %{conn: conn} do
+      conn = post(conn, ~p"/matches", match: @invalid_attrs_same_player)
+      assert html_response(conn, 200) =~ "New Match"
+    end
+
+    test "renders errors when same score", %{conn: conn} do
+      conn = post(conn, ~p"/matches", match: @invalid_attrs_same_score)
       assert html_response(conn, 200) =~ "New Match"
     end
   end
