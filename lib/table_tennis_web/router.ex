@@ -28,7 +28,7 @@ defmodule TableTennisWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :home
-    resources "/players", PlayerController
+    resources "/players", PlayerController, only: [:index, :new, :create, :delete]
     resources "/matches", MatchController
     resources "/users", UserController
     get "/logout", AuthController, :delete

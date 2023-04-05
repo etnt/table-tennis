@@ -12,12 +12,12 @@
   <:col :let={player} label="Won"><%= player.won %></:col>
   <:col :let={player} label="Lost"><%= player.lost %></:col>
   <:col :let={player} label="Rating"><%= player.rating %></:col>
-  <:action :let={player}>
+  <!-- :action :let={player}>
     <div class="sr-only">
       <.link navigate={~p"/players/#{player}"}>Show</.link>
     </div>
     <.link navigate={~p"/players/#{player}/edit"}>Edit</.link>
-  </:action>
+  </:action -->
   <:action :let={player}>
     <.link href={~p"/players/#{player}"} method="delete" data-confirm="Are you sure?">
       Delete

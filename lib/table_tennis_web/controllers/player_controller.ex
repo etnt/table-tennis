@@ -3,6 +3,7 @@ defmodule TableTennisWeb.PlayerController do
 
   alias TableTennis.App
   alias TableTennis.App.Player
+  alias TableTennis.Accounts
 
   def index(conn, _params) do
     players = App.list_players()
@@ -10,19 +11,45 @@ defmodule TableTennisWeb.PlayerController do
   end
 
   def new(conn, _params) do
-    changeset = App.change_player(%Player{})
-    render(conn, :new, changeset: changeset)
+    case get_session(conn, :current_user) do
+      nil ->
+        conn
+        |> put_flash(:error, "You need to be logged in!.")
+        |> redirect(to: ~p"/players")
+
+      cur_user ->
+        case App.email_to_player(cur_user.email) do
+          [] ->
+            changeset = App.change_player(%Player{})
+            render(conn, :new, changeset: changeset)
+          [player] ->
+            conn
+            |> put_flash(:error, "Already registered as player: " <> player.name)
+            |> redirect(to: ~p"/players")
+        end
+
+    end
   end
 
   def create(conn, %{"player" => player_params}) do
-    case App.create_player(player_params) do
-      {:ok, player} ->
+    IO.inspect(player_params, label: ">>> PlayerParams: ")
+    case get_session(conn, :current_user) do
+      nil ->
         conn
-        |> put_flash(:info, "Player created successfully.")
-        |> redirect(to: ~p"/players/#{player}")
+        |> put_flash(:error, "You need to be logged in!.")
+        |> redirect(to: ~p"/players")
+      cur_user ->
+        IO.inspect(cur_user, label: ">>> CUR USER: ")
+        case App.create_player(Map.put(player_params, "email", cur_user.email)) do
+          {:ok, player} ->
+            IO.inspect(player, label: ">>> NEW PLAYER: ")
+            conn
+            |> put_flash(:info, "Player created successfully.")
+            |> redirect(to: ~p"/players")
 
-      {:error, %Ecto.Changeset{} = changeset} ->
-        render(conn, :new, changeset: changeset)
+          {:error, %Ecto.Changeset{} = changeset} ->
+            render(conn, :new, changeset: changeset)
+        end
     end
   end
 

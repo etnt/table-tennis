@@ -22,6 +22,10 @@ defmodule TableTennis.App do
     Repo.all(from p in Player, order_by: [desc: p.rating])
   end
 
+  def email_to_player(email) do
+    Repo.all(from p in Player, where: p.email == ^email)
+  end
+
   @doc """
   Gets a single player.
 
