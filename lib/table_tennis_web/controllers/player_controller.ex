@@ -39,7 +39,6 @@ defmodule TableTennisWeb.PlayerController do
         |> put_flash(:error, "You need to be logged in!.")
         |> redirect(to: ~p"/players")
       cur_user ->
-        IO.inspect(cur_user, label: ">>> CUR USER: ")
         case App.create_player(Map.put(player_params, "email", cur_user.email)) do
           {:ok, player} ->
             IO.inspect(player, label: ">>> NEW PLAYER: ")
@@ -79,11 +78,23 @@ defmodule TableTennisWeb.PlayerController do
   end
 
   def delete(conn, %{"id" => id}) do
-    player = App.get_player!(id)
-    {:ok, _player} = App.delete_player(player)
-
-    conn
-    |> put_flash(:info, "Player deleted successfully.")
-    |> redirect(to: ~p"/players")
+    case get_session(conn, :current_user) do
+      nil ->
+        conn
+        |> put_flash(:error, "You need to be logged in!.")
+        |> redirect(to: ~p"/players")
+      cur_user ->
+        player = App.get_player!(id)
+        if cur_user.email == player.email do
+          {:ok, _player} = App.delete_player(player)
+          conn
+          |> put_flash(:info, "Player deleted successfully.")
+          |> redirect(to: ~p"/players")
+        else
+          conn
+          |> put_flash(:error, "You have not created that player!.")
+          |> redirect(to: ~p"/players")
+        end
+    end
   end
 end
