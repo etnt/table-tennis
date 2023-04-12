@@ -9,3 +9,10 @@
 #
 # We recommend using the bang functions (`insert!`, `update!`
 # and so on) as they will fail if something goes wrong.
+
+TableTennis.App.create_player(%{name: "Stellan",
+                                lost: 0,
+                                won: 0,
+                                rating: 1000,
+                                email: "stellan@tabletennis.org"
+                               })
