@@ -66,13 +66,21 @@ returns a HEEx template to be a function component.
 
 ### Postgres 
 
-If POSTGRES table already exist when: mix ecto.migrate:
+Change the password: 
+
+    ALTER USER <user> WITH PASSWORD '<new-password>';
+
+If POSTGRES table already exist when: `mix ecto.migrate`
 
     psql -U postgres -c 'DROP DATABASE IF EXISTS table_tennis_dev;'
 
 or perhaps better:
 
     mix ecto.drop
+
+then:
+
+    mix ecto.create
 
 to undo e.g a migration:
 
