@@ -5,50 +5,55 @@ defmodule TableTennisWeb.PlayerController do
   alias TableTennis.App.Player
   alias TableTennis.Accounts
 
+  # Controller plugs allows us to execute plugs only within certain actions.
+  plug :authenticate, "before all but index" when action not in [:index]
+
+  defp authenticate(conn, _) do
+    case conn.private.phoenix_action do
+      :index ->
+        conn
+      _action ->
+        case get_session(conn, :current_user) do
+          nil ->
+            conn
+            |> put_flash(:error, "You need to be logged in!")
+            |> redirect(to: ~p"/players")
+            |> halt()
+          _user ->
+            conn
+        end
+    end
+  end
+
   def index(conn, _params) do
     players = App.list_players()
     render(conn, :index, players: players)
   end
 
   def new(conn, _params) do
-    case get_session(conn, :current_user) do
-      nil ->
+    cur_user = get_session(conn, :current_user)
+    case App.email_to_player(cur_user.email) do
+      [] ->
+        changeset = App.change_player(%Player{})
+        render(conn, :new, changeset: changeset)
+      [player] ->
         conn
-        |> put_flash(:error, "You need to be logged in!.")
+        |> put_flash(:error, "Already registered as player: " <> player.name)
         |> redirect(to: ~p"/players")
-
-      cur_user ->
-        case App.email_to_player(cur_user.email) do
-          [] ->
-            changeset = App.change_player(%Player{})
-            render(conn, :new, changeset: changeset)
-          [player] ->
-            conn
-            |> put_flash(:error, "Already registered as player: " <> player.name)
-            |> redirect(to: ~p"/players")
-        end
-
     end
   end
 
   def create(conn, %{"player" => player_params}) do
-    IO.inspect(player_params, label: ">>> PlayerParams: ")
-    case get_session(conn, :current_user) do
-      nil ->
+    cur_user = get_session(conn, :current_user)
+    case App.create_player(Map.put(player_params, "email", cur_user.email)) do
+      {:ok, player} ->
+        IO.inspect(player, label: ">>> NEW PLAYER: ")
         conn
-        |> put_flash(:error, "You need to be logged in!.")
+        |> put_flash(:info, "Player created successfully.")
         |> redirect(to: ~p"/players")
-      cur_user ->
-        case App.create_player(Map.put(player_params, "email", cur_user.email)) do
-          {:ok, player} ->
-            IO.inspect(player, label: ">>> NEW PLAYER: ")
-            conn
-            |> put_flash(:info, "Player created successfully.")
-            |> redirect(to: ~p"/players")
 
-          {:error, %Ecto.Changeset{} = changeset} ->
-            render(conn, :new, changeset: changeset)
-        end
+      {:error, %Ecto.Changeset{} = changeset} ->
+        render(conn, :new, changeset: changeset)
     end
   end
 
@@ -78,23 +83,17 @@ defmodule TableTennisWeb.PlayerController do
   end
 
   def delete(conn, %{"id" => id}) do
-    case get_session(conn, :current_user) do
-      nil ->
-        conn
-        |> put_flash(:error, "You need to be logged in!.")
-        |> redirect(to: ~p"/players")
-      cur_user ->
-        player = App.get_player!(id)
-        if cur_user.email == player.email do
-          {:ok, _player} = App.delete_player(player)
-          conn
-          |> put_flash(:info, "Player deleted successfully.")
-          |> redirect(to: ~p"/players")
-        else
-          conn
-          |> put_flash(:error, "You have not created that player!.")
-          |> redirect(to: ~p"/players")
-        end
+    cur_user = get_session(conn, :current_user)
+    player = App.get_player!(id)
+    if cur_user.email == player.email do
+      {:ok, _player} = App.delete_player(player)
+      conn
+      |> put_flash(:info, "Player deleted successfully.")
+      |> redirect(to: ~p"/players")
+    else
+      conn
+      |> put_flash(:error, "You have not created that player!.")
+      |> redirect(to: ~p"/players")
     end
   end
 end

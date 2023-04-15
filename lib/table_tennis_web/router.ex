@@ -11,6 +11,7 @@ defmodule TableTennisWeb.Router do
     plug TableTennisWeb.Authenticator
   end
 
+
   pipeline :api do
     plug :accepts, ["json"]
   end
@@ -29,10 +30,11 @@ defmodule TableTennisWeb.Router do
 
     get "/", PageController, :home
     resources "/players", PlayerController, only: [:index, :new, :create, :delete]
-    resources "/matches", MatchController
+    resources "/matches", MatchController, only: [:index, :new, :create, :update, :delete]
     resources "/users", UserController
     get "/logout", AuthController, :delete
   end
+
 
   # Other scopes may use custom stacks.
   # scope "/api", TableTennisWeb do

@@ -4,14 +4,13 @@ defmodule TableTennisWeb.Authenticator do
   def init(opts), do: opts
 
   def call(conn, _opts) do
-    user =
       conn
       |> get_session(:current_user)
       |> case do
-        nil -> nil
-        id -> id
+        nil ->
+             assign(conn, :current_user, nil)
+        id ->
+             assign(conn, :current_user, id)
       end
-
-    assign(conn, :current_user, user)
   end
 end
