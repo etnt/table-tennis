@@ -2,8 +2,10 @@
   <.error :if={@changeset.action}>
     Oops, something went wrong! Please check the errors below.
   </.error>
-  <.input field={f[:player1]} type="text" label="Player1" />
-  <.input field={f[:player2]} type="text" label="Player2" />
+  <!-- .input field={f[:player1]} type="text" label="Player1" / -->
+  <!-- .input field={f[:player2]} type="text" label="Player2" / -->
+  <.input field={f[:player1]} type="select" options={@cur_player_name}/>
+  <.input field={f[:player2]} type="select" options={@opponents}/>
   <.input field={f[:score1]} type="number" label="Score1" />
   <.input field={f[:score2]} type="number" label="Score2" />
   <:actions>

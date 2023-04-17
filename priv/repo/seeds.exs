@@ -16,3 +16,10 @@ TableTennis.App.create_player(%{name: "Stellan",
                                 rating: 1000,
                                 email: "stellan@tabletennis.org"
                                })
+
+TableTennis.App.create_player(%{name: "J-O",
+                                lost: 0,
+                                won: 0,
+                                rating: 1000,
+                                email: "waldner@tabletennis.org"
+                               })
