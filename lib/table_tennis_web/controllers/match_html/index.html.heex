@@ -12,12 +12,12 @@
   <:col :let={match} label="Player2"><%= match.player2 %></:col>
   <:col :let={match} label="Score1"><%= match.score1 %></:col>
   <:col :let={match} label="Score2"><%= match.score2 %></:col>
-  <:action :let={match}>
+  <!-- :action :let={match}>
     <div class="sr-only">
       <.link navigate={~p"/matches/#{match}"}>Show</.link>
     </div>
-    <.link navigate={~p"/matches/#{match}/edit"}>Edit</.link>
-  </:action>
+    <.link navigate={~p"/matches/#{match}/edit"}>Edit</.link >
+  </:action -->
   <:action :let={match}>
     <.link href={~p"/matches/#{match}"} method="delete" data-confirm="Are you sure?">
       Delete

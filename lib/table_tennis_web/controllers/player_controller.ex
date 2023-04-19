@@ -5,7 +5,7 @@ defmodule TableTennisWeb.PlayerController do
   alias TableTennis.App.Player
   alias TableTennis.Accounts
 
-  # Controller plugs allows us to execute plugs only within certain actions.
+  # Controller plugs allows us to execute plugs only certain actions.
   plug :authenticate, "before all but index" when action not in [:index]
 
   defp authenticate(conn, _) do
