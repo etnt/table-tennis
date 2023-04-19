@@ -10,6 +10,8 @@ defmodule TableTennisWeb.AuthController do
   alias Ueberauth.Strategy.Helpers
   alias TableTennis.Accounts
 
+
+
   def request(conn, _params) do
     render(conn, "request.html", callback_url: Helpers.callback_url(conn))
   end

@@ -33,6 +33,7 @@ defmodule TableTennisWeb.Router do
     resources "/matches", MatchController, only: [:index, :new, :create, :update, :delete]
     resources "/users", UserController
     get "/logout", AuthController, :delete
+    get "/login", PageController, :login
   end
 
 
