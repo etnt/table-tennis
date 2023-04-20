@@ -3,11 +3,28 @@
 Revisiting my old Table Tennis Score System, now as a tool
 to learn Elixir+Phoenix.
 
-At the end of this README I have some notes I've jotted down
-while learning the ropes of this cool framework.
+A player can be created by logging in via any of the
+GitHub, Twitter or Google authentication providers.
+
+Then matches can be stored between two players.
+
+A rating figure is calculated so that you don't have
+to guess who is the best Table Tennis player...
+
+![](list-matches.png)
+
+![](list-players.png)
 
 
-## Run
+## Install and Run
+
+You need to have Elixir and Postgres installed.
+
+Make sure to configure the Postgres user and password in
+the `config/dev.exs` file. You can also change the IP/Port
+in this file.
+
+For authentication, see below how to enable it for the various providers.
 
 To start your Phoenix server:
 
@@ -28,7 +45,8 @@ store in environment variables like this:
     # Client ID and Secret
     export GITHUB_CLIENT_ID=<client-id>
     export GITHUB_CLIENT_SECRET=<client-secret>
-
+    
+Don't forget to add your callback URL to the white list.
 
 ## Twitter authentication
 
@@ -42,7 +60,7 @@ in the environment variables like this:
     export TWITTER_CONSUMER_SECRET=<consumer-secret>
     
 You also need to setup your callback URL in a whitelist.
-You do that under the `User authentication settings` andit looks
+You do that under the `User authentication settings` and it looks
 typically like this:
 
     http://localhost:4040/auth/twitter/callback
@@ -58,6 +76,14 @@ and `Privacy Policy`.
 Have a look here:
 https://www.balbooa.com/gridbox-documentation/how-to-get-google-client-id-and-client-secret
 
+You will need to create a `client-id` and a `client-secret`that you
+store in environment variables like this:
+
+    # Client ID and Secret
+    export GOOGLE_CLIENT_ID=<client-id>
+    export GOOGLE_CLIENT_SECRET=<client-secret>
+
+Don't forget to add your callback URL to the white list.
 
 ## Learn more
 
@@ -70,6 +96,9 @@ Ready to run in production? Please [check our deployment guides](https://hexdocs
   * Source: https://github.com/phoenixframework/phoenix
 
 ## Notes
+
+Here I have some notes I've jotted down
+while learning the ropes of this cool framework.
 
 ### Overview
 Phoenix is a web development framework written in Elixir which
@@ -125,6 +154,10 @@ or perhaps better:
 then:
 
     mix ecto.create
+    
+or even better:
+
+    mix ecto.reset
 
 to undo e.g a migration:
 
