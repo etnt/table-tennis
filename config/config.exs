@@ -59,13 +59,18 @@ config :logger, :console,
 # Configure Github login with Uberauth
 config :ueberauth, Ueberauth,
   providers: [
-    github: {Ueberauth.Strategy.Github, [default_scope: "user:email"]}
+    github: {Ueberauth.Strategy.Github, [default_scope: "user:email"]},
+    twitter: {Ueberauth.Strategy.Twitter, []}
   ]
 
 # Configure the provider
 config :ueberauth, Ueberauth.Strategy.Github.OAuth,
   client_id: {:system, "GITHUB_CLIENT_ID"},
   client_secret: {:system, "GITHUB_CLIENT_SECRET"}
+
+config :ueberauth, Ueberauth.Strategy.Twitter.OAuth,
+  consumer_key: System.get_env("TWITTER_CONSUMER_KEY"),
+  consumer_secret: System.get_env("TWITTER_CONSUMER_SECRET")
 
 # Use Jason for JSON parsing in Phoenix
 config :phoenix, :json_library, Jason

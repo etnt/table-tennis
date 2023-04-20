@@ -52,6 +52,7 @@ defmodule TableTennis.MixProject do
       {:plug_cowboy, "~> 2.5"},
       {:ueberauth, "~> 0.7"},
       {:ueberauth_github, "~> 0.8"},
+      {:ueberauth_twitter, "~> 0.4"},
       {:req, "~> 0.3.6"}
     ]
   end
