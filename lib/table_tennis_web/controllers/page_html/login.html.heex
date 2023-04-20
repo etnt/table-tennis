@@ -3,16 +3,22 @@
 </.header>
 
 <!-- div class="mt-16" -->
-<div class="flex items-center gap-10 mt-10 ml-10">
-  <.link href={~p"/auth/github"}
+<div class="flex items-center gap-10 mt-10 ml-5">
+  <.link href={~p"/auth/github"} alt="GitHub sign in"
     class=""
     >
-    <img src="/images/github.png"/>
+    <img src={~p"/images/github.png"}/>
   </.link>
 
-  <.link href={~p"/auth/twitter"}
-    class="ml-20"
+  <.link href={~p"/auth/twitter"} alt="Twitter sign in"
+    class="ml-15"
     >
-    <img src="/images/twitter.png"/>
+    <img src={~p"/images/twitter.png"}/>
+  </.link>
+
+  <.link href={~p"/auth/google"} alt="Google sign in"
+    class="ml-15"
+    >
+    <img src={~p"/images/google.png"}/>
   </.link>
 </div>
