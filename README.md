@@ -53,6 +53,12 @@ You also need to enable `Request email from users` which will
 require you to fill in URL pointing to your `Terms of service`
 and `Privacy Policy`.
 
+## Google authentication
+
+Have a look here:
+https://www.balbooa.com/gridbox-documentation/how-to-get-google-client-id-and-client-secret
+
+
 ## Learn more
 
 Ready to run in production? Please [check our deployment guides](https://hexdocs.pm/phoenix/deployment.html).
