@@ -14,11 +14,48 @@ To start your Phoenix server:
   * Run `mix setup` to install and setup dependencies
   * Start Phoenix endpoint with `mix phx.server` or inside IEx with `iex -S mix phx.server`
 
-Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
+Now you can visit [`localhost:4040`](http://localhost:4040) from your browser.
 
-Ready to run in production? Please [check our deployment guides](https://hexdocs.pm/phoenix/deployment.html).
+## Github authentication
+
+To setup your own Table Tennis server and make Github login possible
+you need to create your OAuth-app at github, see here how to do it:
+https://docs.github.com/en/apps/oauth-apps/building-oauth-apps/creating-an-oauth-app
+
+You will need to create a `client-id` and a `client-secret`that you
+store in environment variables like this:
+
+    # Client ID and Secret
+    export GITHUB_CLIENT_ID=<client-id>
+    export GITHUB_CLIENT_SECRET=<client-secret>
+
+
+## Twitter authentication
+
+To setup your own Table Tennis server and make Twitter login possible
+you need to create your app at the Twitter developer portal.
+Then you need to create the API-Key and Secret and store them
+in the environment variables like this:
+
+    # Consumer Keys: API Key and Secret
+    export TWITTER_CONSUMER_KEY=<consumer-key>
+    export TWITTER_CONSUMER_SECRET=<consumer-secret>
+    
+You also need to setup your callback URL in a whitelist.
+You do that under the `User authentication settings` andit looks
+typically like this:
+
+    http://localhost:4040/auth/twitter/callback
+    
+A website URL is also requested but that can be whatever it seems.
+
+You also need to enable `Request email from users` which will
+require you to fill in URL pointing to your `Terms of service`
+and `Privacy Policy`.
 
 ## Learn more
+
+Ready to run in production? Please [check our deployment guides](https://hexdocs.pm/phoenix/deployment.html).
 
   * Official website: https://www.phoenixframework.org/
   * Guides: https://hexdocs.pm/phoenix/overview.html
@@ -63,29 +100,6 @@ returns a HEEx template to be a function component.
     mix phx.gen.html App Player players name:string won:integer lost:integer rating:integer
     mix phx.gen.html App Match matches player1:string player2:string score1:integer score2:integer
     mix ecto.migrate
-
-### Twitter authentication
-
-To setup your own Table Tennis server and make Twitter login possible
-you need to create your app at the Twitter developer portal.
-Then you need to create the API-Key and Secret and store them
-in the environment variables like this:
-
-    # Consumer Keys: API Key and Secret
-    export TWITTER_CONSUMER_KEY=<consumer-key>
-    export TWITTER_CONSUMER_SECRET=<consumer-secret>
-    
-You also need to setup your callback URL in a whitelist.
-You do that under the `User authentication settings` andit looks
-typically like this:
-
-    http://localhost:4040/auth/twitter/callback
-    
-A website URL is also requested but that can be whatever it seems.
-
-You also need to enable `Request email from users` which will
-require you to fill in URL pointing to your `Terms of service`
-and `Privacy Policy`.
 
 
 ### Postgres 
