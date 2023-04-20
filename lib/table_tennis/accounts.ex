@@ -139,10 +139,10 @@ defmodule TableTennis.Accounts do
     IO.inspect(Repo.get_by(User, email: email))
   end
 
-  # github does it this way
+  # Github does it this way
   defp avatar_from_auth(%{info: %{urls: %{avatar_url: image}}}), do: image
 
-  # facebook does it this way
+  # Facebook and Twitter does it this way
   defp avatar_from_auth(%{info: %{image: image}}), do: image
 
   # default case if nothing matches
@@ -163,6 +163,15 @@ defmodule TableTennis.Accounts do
           email: email,
           avatar: avatar_from_auth(auth),
           provider: "github"
+        }
+
+      Ueberauth.Strategy.Twitter ->
+        %{
+          uid: auth.uid,
+          name: name_from_auth(auth),
+          email: email,
+          avatar: avatar_from_auth(auth),
+          provider: "twitter"
         }
 
       Ueberauth.Strategy.Facebook ->
