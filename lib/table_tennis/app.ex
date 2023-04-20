@@ -124,6 +124,20 @@ defmodule TableTennis.App do
   end
 
   @doc """
+  Returns the list of matches for a player.
+
+  ## Examples
+
+      iex> list_matches_for_player(player)
+      [%Match{}, ...]
+
+  """
+  def list_matches_for_player(player) do
+    name = player.name
+    Repo.all(from m in Match, where: m.player1 == ^name or m.player2 == ^name)
+  end
+
+  @doc """
   Gets a single match.
 
   Raises `Ecto.NoResultsError` if the Match does not exist.

@@ -19,7 +19,7 @@
     <.link navigate={~p"/players/#{player}/edit"}>Edit</.link>
   </:action -->
   <:action :let={player}>
-    <.link href={~p"/players/#{player}"} method="delete" data-confirm="Are you sure?">
+    <.link href={~p"/players/#{player}"} method="delete" data-confirm="Are you sure; all your matches will be deleted?">
       Delete
     </.link>
   </:action>
