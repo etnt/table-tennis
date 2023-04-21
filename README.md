@@ -18,7 +18,7 @@ to guess who is the best Table Tennis player...
 
 ## Install and Run
 
-You need to have Elixir and Postgres installed.
+You need to have Elixir and Postgres installed. See below.
 
 Make sure to configure the Postgres user and password in
 the `config/dev.exs` file. You can also change the IP/Port
@@ -84,6 +84,38 @@ store in environment variables like this:
     export GOOGLE_CLIENT_SECRET=<client-secret>
 
 Don't forget to add your callback URL to the white list.
+
+## Installing Erlang, Elixir/Phoenix and Postgres
+
+Assuming Debian, we are using `asdf` in order to handle multiple versions
+of Erlang and Elixir.
+
+    # Install asdf
+    git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.11.3
+
+    # Setup asdf
+    $ tail -3 ~/.bashrc
+    # https://asdf-vm.com/guide/getting-started.html#community-supported-download-methods
+    . "$HOME/.asdf/asdf.sh"
+    . "$HOME/.asdf/completions/asdf.bash"
+    
+    # Install Erlang
+    asdf plugin add erlang https://github.com/asdf-vm/asdf-erlang.git
+    asdf install erlang 25.3
+    asdf global erlang 25.3
+    
+    # Install Elixir
+    asdf plugin-add elixir https://github.com/asdf-vm/asdf-elixir.git
+    asdf install elixir 1.14.4
+    asdf global elixir 1.14.4
+    
+    # Install Phoenix
+    mix local.hex
+    mix archive.install hex phx_new
+    
+    # Install Postgres
+    # https://wiki.debian.org/PostgreSql
+    sudo apt install postgresql postgresql-client
 
 ## Learn more
 
