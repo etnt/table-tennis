@@ -86,12 +86,13 @@ defmodule TableTennisWeb.PlayerController do
     cur_user = get_session(conn, :current_user)
     player = App.get_player!(id)
 
-    # Remove all matches of the player!
-    matches = App.list_matches_for_player(player)
-    for m <- matches, do: App.delete_match(m)
-
     if cur_user.email == player.email do
       {:ok, _player} = App.delete_player(player)
+
+      # Remove all matches of the player!
+      matches = App.list_matches_for_player(player)
+      for m <- matches, do: App.delete_match(m)
+
       conn
       |> put_flash(:info, "Player deleted successfully.")
       |> redirect(to: ~p"/players")

@@ -7,7 +7,8 @@
   </:actions>
 </.header>
 
-<.table id="matches" rows={@matches} row_click={&JS.navigate(~p"/matches/#{&1}")}>
+<!-- .table id="matches" rows={@matches} row_click={&JS.navigate(~p"/matches/#{&1}")} -->
+<.table id="matches" rows={@matches}>
   <:col :let={match} label="Player1"><%= match.player1 %></:col>
   <:col :let={match} label="Player2"><%= match.player2 %></:col>
   <:col :let={match} label="Score1"><%= match.score1 %></:col>
