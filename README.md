@@ -51,7 +51,7 @@ Don't forget to add your callback URL to the white list.
 ## Twitter authentication
 
 To setup your own Table Tennis server and make Twitter login possible
-you need to create your app at the Twitter developer portal.
+you need to create your app at the Twitter developer portal (https://apps.twitter.com).
 Then you need to create the API-Key and Secret and store them
 in the environment variables like this:
 
